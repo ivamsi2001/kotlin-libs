@@ -49,9 +49,9 @@ publishing {
     repositories {
         maven {
             if(artifactVersion!!.endsWith ("-SNAPSHOT")){
-                url = uri("${artifactoryURL}/libs-snapshot")
+                url = uri("${artifactoryURL}/libs-snapshot-local")
             }else{
-                url = uri("${artifactoryURL}/releases")
+                url = uri("${artifactoryURL}/libs-release-local")
             }
             credentials{
                 username = System.getenv("MAVEN_CRED_USR")
