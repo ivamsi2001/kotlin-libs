@@ -23,8 +23,10 @@ pipeline{
         stage('Git Tag'){
             when {branch "main"}
             steps{
-                def config = readProperties file: 'gradle.properties'
-                echo "Git Tag Version : ${config.tagVersion}"
+                script{
+                    def config = readProperties file: 'gradle.properties'
+                    echo "Git Tag Version : ${config.tagVersion}"
+                }
             }
         }
     }
