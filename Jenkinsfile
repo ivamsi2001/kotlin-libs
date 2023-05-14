@@ -31,13 +31,7 @@ pipeline{
             when {branch "main"}
             steps{
                 def config = readProperties file: 'gradle.properties'
-                echo 'Git Tag Version : ' ${config.tagVersion}
-                glGitTagAndPush
-                    credentialsId = "${GIT_CREDENTIAL_ID}",
-                    repoUrl: ${GIT_URL},
-                    tag: "release-${config.tagVersion}",
-                    userName: "${GIT_COMMITTER_NAME}",
-                    userEmail: "${GIT_AUTHOR_EMAIL}"
+                echo "Git Tag Version : ${config.tagVersion}"
             }
         }
     }
