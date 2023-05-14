@@ -6,15 +6,15 @@ plugins {
 
 java.sourceCompatibility = JavaVersion.VERSION_17
 var artifactVersion : String? = "${version}-SNAPSHOT"
-var artifactoryURL : String? = ""
+var artifactoryURL : String? = "http://localhost:8046/artifactory"
 
 project.ext{
     val branchName: String? = System.getenv("GIT_BRANCH")
-    if("main".equals(branchName)){
-        artifactVersion = "${version}"
+    if("main" == branchName){
+        artifactVersion = "$version"
     }
-    println ("Branch Name :["+branchName+"]")
-    println ("Version  :["+artifactVersion+"]")
+    println ("Branch Name :[$branchName]")
+    println ("Version  :[$artifactVersion]")
 }
 
 repositories {
@@ -38,25 +38,26 @@ tasks.withType<Test> {
 }
 
 publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "${group}"
-            artifactId = "kotlin-web-lib"
-            version = "${artifactVersion}"
-            from(components["java"])
-        }
-    }
     repositories {
         maven {
-            if(artifactVersion!!.endsWith ("-SNAPSHOT")){
-                url = uri("${artifactoryURL}/libs-snapshot")
-            }else{
-                url = uri("${artifactoryURL}/releases")
-            }
+            isAllowInsecureProtocol = true
             credentials{
                 username = System.getenv("MAVEN_CRED_USR")
                 password = System.getenv("MAVEN_CRED_PSW")
             }
+            url = if(artifactVersion!!.endsWith ("-SNAPSHOT")){
+                uri("${artifactoryURL}/libs-snapshot-local")
+            }else{
+                uri("${artifactoryURL}/libs-release-local")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "$group"
+            artifactId = "kotlin-web-lib"
+            version = "$artifactVersion"
+            from(components["java"])
         }
     }
 }
